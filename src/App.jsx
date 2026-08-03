@@ -1,11 +1,24 @@
+import { Routes, Route } from "react-router-dom";
+
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import Dashboard from "./pages/dashboard/Dashboard";
+import NotFound from "./pages/NotFound";
+
 function App() {
-  return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center">
-      <h1 className="text-5xl font-bold text-blue-600">
-        AssetLedger
-      </h1>
-    </div>
-  )
+    return (
+        <Routes>
+
+            <Route path="/" element={<Login />} />
+
+            <Route path="/register" element={<Register />} />
+
+            <Route path="/dashboard" element={<Dashboard />} />
+
+            <Route path="*" element={<NotFound />} />
+
+        </Routes>
+    );
 }
 
-export default App
+export default App;
