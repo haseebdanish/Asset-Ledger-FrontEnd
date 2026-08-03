@@ -1,6 +1,19 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
+
 
 function Login() {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+
+        console.log(email);
+        console.log(password);
+    };
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4">
 
@@ -18,7 +31,8 @@ function Login() {
 
                 </div>
 
-                <form className="space-y-5">
+                <form onSubmit={handleLogin}
+                    className="space-y-5">
 
                     <div>
 
@@ -29,6 +43,8 @@ function Login() {
                         <input
                             type="email"
                             placeholder="Enter your email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             className="w-full rounded-lg border border-slate-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
 
@@ -43,6 +59,8 @@ function Login() {
                         <input
                             type="password"
                             placeholder="Enter your password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             className="w-full rounded-lg border border-slate-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
 
