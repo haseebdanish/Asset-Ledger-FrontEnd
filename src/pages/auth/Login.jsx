@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import authService from "../../services/authService";
 
 
 function Login() {
@@ -7,12 +8,24 @@ function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleLogin = (e) => {
-        e.preventDefault();
+    const handleLogin = async (e) => {
+    e.preventDefault();
 
-        console.log(email);
-        console.log(password);
-    };
+    try {
+
+        const response = await authService.login({
+            email,
+            password,
+        });
+
+        console.log(response);
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+};
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-slate-100 px-4">
