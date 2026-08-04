@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
 
@@ -11,6 +12,7 @@ function Dashboard() {
             Dashboard
         </h1>
     );
+
 }
 
 export default Dashboard;

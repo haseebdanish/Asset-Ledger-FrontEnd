@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import authService from "../../services/authService";
 
@@ -8,7 +8,9 @@ function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleLogin = async (e) => {
+const navigate = useNavigate();
+
+const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
@@ -18,12 +20,12 @@ function Login() {
             password,
         });
 
-        console.log(response);
+        localStorage.setItem("token", response.token);
+
+        navigate("/dashboard");
 
     } catch (error) {
-
         console.error(error);
-
     }
 };
 

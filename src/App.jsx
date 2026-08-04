@@ -4,21 +4,22 @@ import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Dashboard from "./pages/dashboard/Dashboard";
 import NotFound from "./pages/NotFound";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-    return (
-        <Routes>
+  return (
+    <Routes>
 
-            <Route path="/" element={<Login />} />
+      <Route path="/" element={<Login />} />
 
-            <Route path="/register" element={<Register />} />
+      <Route path="/register" element={<Register />} />
 
-            <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute> }/>
 
-            <Route path="*" element={<NotFound />} />
+      <Route path="*" element={<NotFound />} />
 
-        </Routes>
-    );
+    </Routes>
+  );
 }
 
 export default App;
