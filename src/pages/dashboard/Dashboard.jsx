@@ -1,7 +1,33 @@
 import Navbar from "../../components/Navbar";
 import SummaryCard from "../../components/SummaryCard";
+import { useEffect, useState } from "react";
+import authService from "../../services/authService";
 
 function Dashboard() {
+
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+
+        const fetchUser = async () => {
+
+            try {
+
+                const data = await authService.getCurrentUser();
+
+                setUser(data);
+
+            } catch (error) {
+
+                console.error(error);
+
+            }
+
+        };
+
+        fetchUser();
+
+    }, []);
 
     return (
 
@@ -12,7 +38,7 @@ function Dashboard() {
             <div className="max-w-7xl mx-auto px-6 py-8">
 
                 <h2 className="text-3xl font-bold mb-8">
-                    Welcome Back 👋
+                    Welcome Back{user ? `, ${user.userName}` : ""} 👋
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

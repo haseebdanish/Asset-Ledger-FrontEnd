@@ -19,6 +19,17 @@ const authService = {
     );
 
     return response.data;
+},
+
+    getCurrentUser : async () => {
+
+    const response = await api.get("/users/me", {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+    });
+
+    return response.data;
 }
 }
 
