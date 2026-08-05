@@ -2,57 +2,57 @@ import api from "../api/axios";
 
 const assetService = {
 
-    getAssets: async (token) => {
+    getAssets: async () => {
 
         const response = await api.get("/assets", {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
         });
 
         return response.data;
     },
 
-    getSummary: async (token) => {
+    getSummary: async () => {
 
         const response = await api.get("/assets/summary", {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
         });
 
         return response.data;
     },
 
-    getAnalytics: async (token) => {
+    getAnalytics: async () => {
 
         const response = await api.get("/assets/analytics", {
             headers: {
-                Authorization: `Bearer ${token}`,
+                 Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
         });
 
         return response.data;
     },
 
-    getAllocation: async (token) => {
+    getAllocation: async () => {
 
         const response = await api.get("/assets/allocation", {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
         });
 
         return response.data;
     },
 
-    searchAssets: async (token, keyword) => {
+    searchAssets: async (keyword) => {
 
         const response = await api.get(
             `/assets/search?keyword=${keyword}`,
             {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             }
         );
@@ -60,13 +60,13 @@ const assetService = {
         return response.data;
     },
 
-    getAssetsByType: async (token, assetType) => {
+    getAssetsByType: async (assetType) => {
 
         const response = await api.get(
             `/assets/type/${assetType}`,
             {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                 },
             }
         );

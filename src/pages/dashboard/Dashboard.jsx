@@ -2,10 +2,13 @@ import Navbar from "../../components/Navbar";
 import SummaryCard from "../../components/SummaryCard";
 import { useEffect, useState } from "react";
 import authService from "../../services/authService";
+import assetService from "../../services/assetService";
+import { formatCurrency } from "../../utils/formatCurrency";
 
 function Dashboard() {
 
     const [user, setUser] = useState(null);
+    const [summary, setSummary] = useState(null);
 
     useEffect(() => {
 
@@ -29,6 +32,28 @@ function Dashboard() {
 
     }, []);
 
+    useEffect(() => {
+
+        const fetchSummary = async () => {
+
+            try {
+
+                const data = await assetService.getSummary();
+
+                setSummary(data);
+
+            } catch (error) {
+
+                console.error(error);
+
+            }
+
+        };
+
+        fetchSummary();
+
+    }, []);
+
     return (
 
         <div className="min-h-screen bg-slate-100">
@@ -44,23 +69,24 @@ function Dashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
                     <SummaryCard
-                        title="Net Worth"
-                        value="₹0"
+                        title="Total Investment"
+                        value={formatCurrency(summary?.totalInvestment)}
                     />
 
                     <SummaryCard
-                        title="Assets"
-                        value="0"
+                        title="Total Assets"
+                        value={summary?.totalAssets ?? 0}
                     />
 
                     <SummaryCard
-                        title="Investment"
-                        value="₹0"
+                        title="Stocks"
+                        value={formatCurrency(summary?.stockInvestment)}
                     />
 
+
                     <SummaryCard
-                        title="Asset Types"
-                        value="0"
+                        title="Crypto"
+                        value={formatCurrency(summary?.cryptoInvestment)}
                     />
 
                 </div>
