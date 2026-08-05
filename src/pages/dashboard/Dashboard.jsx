@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import authService from "../../services/authService";
 import assetService from "../../services/assetService";
 import { formatCurrency } from "../../utils/formatCurrency";
+import AssetTable from "../../components/AssetTable";
 
 function Dashboard() {
 
@@ -90,7 +91,7 @@ function Dashboard() {
                     />
 
                 </div>
-
+                <AssetTable />
             </div>
 
         </div>
