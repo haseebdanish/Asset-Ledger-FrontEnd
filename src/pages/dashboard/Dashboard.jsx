@@ -13,6 +13,7 @@ function Dashboard() {
     const [summary, setSummary] = useState(null);
     const [assets, setAssets] = useState([]);
     const [searchKeyword, setSearchKeyword] = useState("");
+    const [selectedType, setSelectedType] = useState("ALL");
 
     useEffect(() => {
 
@@ -66,13 +67,17 @@ function Dashboard() {
 
                 let data;
 
-                if (searchKeyword.trim() === "") {
+                if (searchKeyword.trim() !== "") {
 
-                    data = await assetService.getAssets();
+                    data = await assetService.searchAssets(searchKeyword);
+
+                } else if (selectedType !== "ALL") {
+
+                    data = await assetService.getAssetsByType(selectedType);
 
                 } else {
 
-                    data = await assetService.searchAssets(searchKeyword);
+                    data = await assetService.getAssets();
 
                 }
 
@@ -88,7 +93,7 @@ function Dashboard() {
 
         fetchAssets();
 
-    }, [searchKeyword]);
+    }, [searchKeyword, selectedType]);
 
     return (
 
@@ -129,11 +134,29 @@ function Dashboard() {
 
                         <input
                             type="text"
-                            placeholder="Search assets..."
+                            placeholder="🔍 Search assets..."
                             value={searchKeyword}
                             onChange={(e) => setSearchKeyword(e.target.value)}
-                            className="w-80 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-80 px-4 py-2 border rounded-lg"
                         />
+
+                        <select
+                            value={selectedType}
+                            onChange={(e) => setSelectedType(e.target.value)}
+                            className="border rounded-lg px-4 py-2"
+                        >
+
+                            <option value="ALL">All</option>
+
+                            <option value="STOCK">Stock</option>
+
+                            <option value="CRYPTO">Crypto</option>
+
+                            <option value="GOLD">Gold</option>
+
+                            <option value="MUTUAL_FUND">Mutual Fund</option>
+
+                        </select>
 
                     </div>
 
