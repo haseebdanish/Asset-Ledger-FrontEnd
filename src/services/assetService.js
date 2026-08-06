@@ -28,7 +28,7 @@ const assetService = {
 
         const response = await api.get("/assets/analytics", {
             headers: {
-                 Authorization: `Bearer ${localStorage.getItem("token")}`,
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
         });
 

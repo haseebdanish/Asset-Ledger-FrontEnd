@@ -6,10 +6,13 @@ import assetService from "../../services/assetService";
 import { formatCurrency } from "../../utils/formatCurrency";
 import AssetTable from "../../components/AssetTable";
 
+
 function Dashboard() {
 
     const [user, setUser] = useState(null);
     const [summary, setSummary] = useState(null);
+    const [assets, setAssets] = useState([]);
+    const [searchKeyword, setSearchKeyword] = useState("");
 
     useEffect(() => {
 
@@ -55,6 +58,38 @@ function Dashboard() {
 
     }, []);
 
+    useEffect(() => {
+
+        const fetchAssets = async () => {
+
+            try {
+
+                let data;
+
+                if (searchKeyword.trim() === "") {
+
+                    data = await assetService.getAssets();
+
+                } else {
+
+                    data = await assetService.searchAssets(searchKeyword);
+
+                }
+
+                setAssets(data);
+
+            } catch (error) {
+
+                console.error(error);
+
+            }
+
+        };
+
+        fetchAssets();
+
+    }, [searchKeyword]);
+
     return (
 
         <div className="min-h-screen bg-slate-100">
@@ -90,8 +125,20 @@ function Dashboard() {
                         value={formatCurrency(summary?.cryptoInvestment)}
                     />
 
+                    <div className="mt-8 mb-4 flex justify-between items-center">
+
+                        <input
+                            type="text"
+                            placeholder="Search assets..."
+                            value={searchKeyword}
+                            onChange={(e) => setSearchKeyword(e.target.value)}
+                            className="w-80 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+
+                    </div>
+
                 </div>
-                <AssetTable />
+                <AssetTable assets={assets} />
             </div>
 
         </div>

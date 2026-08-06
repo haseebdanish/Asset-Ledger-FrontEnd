@@ -1,32 +1,6 @@
-import { useEffect, useState } from "react";
-import assetService from "../services/assetService";
 import { formatCurrency } from "../utils/formatCurrency";
 
-function AssetTable() {
-
-    const [assets, setAssets] = useState([]);
-
-    useEffect(() => {
-
-        const fetchAssets = async () => {
-
-            try {
-
-                const data = await assetService.getAssets();
-
-                setAssets(data);
-
-            } catch (error) {
-
-                console.error(error);
-
-            }
-
-        };
-
-        fetchAssets();
-
-    }, []);
+function AssetTable({ assets }) {
 
     return (
 
