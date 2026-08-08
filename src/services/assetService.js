@@ -72,7 +72,22 @@ const assetService = {
         );
 
         return response.data;
-    }
+    },
+
+    addAsset: async (assetData) => {
+
+        const response = await api.post(
+            "/assets",
+            assetData,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            }
+        );
+
+        return response.data;
+    },
 
 };
 

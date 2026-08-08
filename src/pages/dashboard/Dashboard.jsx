@@ -1,99 +1,130 @@
+import { useEffect, useState } from "react";
+
 import Navbar from "../../components/Navbar";
 import SummaryCard from "../../components/SummaryCard";
-import { useEffect, useState } from "react";
-import authService from "../../services/authService";
-import assetService from "../../services/assetService";
-import { formatCurrency } from "../../utils/formatCurrency";
 import AssetTable from "../../components/AssetTable";
+import AddAssetModal from "../../components/AddAssetModal";
 
+import assetService from "../../services/assetService";
+import authService from "../../services/authService";
+
+import { formatCurrency } from "../../utils/formatCurrency";
 
 function Dashboard() {
 
     const [user, setUser] = useState(null);
+
     const [summary, setSummary] = useState(null);
+
     const [assets, setAssets] = useState([]);
+
     const [searchKeyword, setSearchKeyword] = useState("");
+
     const [selectedType, setSelectedType] = useState("ALL");
 
-    useEffect(() => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-        const fetchUser = async () => {
 
-            try {
+    // -----------------------------
+    // Fetch Current User
+    // -----------------------------
 
-                const data = await authService.getCurrentUser();
+    const fetchUser = async () => {
 
-                setUser(data);
+        try {
 
-            } catch (error) {
+            const data = await authService.getCurrentUser();
 
-                console.error(error);
+            setUser(data);
+
+        } catch (error) {
+
+            console.error("Failed to fetch user:", error);
+
+        }
+
+    };
+
+
+    // -----------------------------
+    // Fetch Portfolio Summary
+    // -----------------------------
+
+    const fetchSummary = async () => {
+
+        try {
+
+            const data = await assetService.getSummary();
+
+            setSummary(data);
+
+        } catch (error) {
+
+            console.error("Failed to fetch summary:", error);
+
+        }
+
+    };
+
+
+    // -----------------------------
+    // Fetch Assets
+    // -----------------------------
+
+    const fetchAssets = async () => {
+
+        try {
+
+            let data;
+
+            if (searchKeyword.trim() !== "") {
+
+                data = await assetService.searchAssets(searchKeyword);
+
+            } else if (selectedType !== "ALL") {
+
+                data = await assetService.getAssetsByType(selectedType);
+
+            } else {
+
+                data = await assetService.getAssets();
 
             }
 
-        };
+            setAssets(data);
+
+        } catch (error) {
+
+            console.error("Failed to fetch assets:", error);
+
+        }
+
+    };
+
+
+    // -----------------------------
+    // Initial Dashboard Data
+    // -----------------------------
+
+    useEffect(() => {
 
         fetchUser();
-
-    }, []);
-
-    useEffect(() => {
-
-        const fetchSummary = async () => {
-
-            try {
-
-                const data = await assetService.getSummary();
-
-                setSummary(data);
-
-            } catch (error) {
-
-                console.error(error);
-
-            }
-
-        };
-
         fetchSummary();
 
     }, []);
 
+
+    // -----------------------------
+    // Fetch Assets when
+    // Search / Filter changes
+    // -----------------------------
+
     useEffect(() => {
-
-        const fetchAssets = async () => {
-
-            try {
-
-                let data;
-
-                if (searchKeyword.trim() !== "") {
-
-                    data = await assetService.searchAssets(searchKeyword);
-
-                } else if (selectedType !== "ALL") {
-
-                    data = await assetService.getAssetsByType(selectedType);
-
-                } else {
-
-                    data = await assetService.getAssets();
-
-                }
-
-                setAssets(data);
-
-            } catch (error) {
-
-                console.error(error);
-
-            }
-
-        };
 
         fetchAssets();
 
     }, [searchKeyword, selectedType]);
+
 
     return (
 
@@ -103,15 +134,25 @@ function Dashboard() {
 
             <div className="max-w-7xl mx-auto px-6 py-8">
 
+                {/* Welcome */}
+
                 <h2 className="text-3xl font-bold mb-8">
-                    Welcome Back{user ? `, ${user.userName}` : ""} 👋
+
+                    Welcome Back
+                    {user ? `, ${user.userName}` : ""} 👋
+
                 </h2>
+
+
+                {/* Summary Cards */}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 
                     <SummaryCard
                         title="Total Investment"
-                        value={formatCurrency(summary?.totalInvestment)}
+                        value={formatCurrency(
+                            summary?.totalInvestment
+                        )}
                     />
 
                     <SummaryCard
@@ -121,47 +162,103 @@ function Dashboard() {
 
                     <SummaryCard
                         title="Stocks"
-                        value={formatCurrency(summary?.stockInvestment)}
+                        value={formatCurrency(
+                            summary?.stockInvestment
+                        )}
                     />
-
 
                     <SummaryCard
                         title="Crypto"
-                        value={formatCurrency(summary?.cryptoInvestment)}
+                        value={formatCurrency(
+                            summary?.cryptoInvestment
+                        )}
                     />
 
-                    <div className="mt-8 mb-4 flex justify-between items-center">
+                </div>
+
+
+                {/* Portfolio Toolbar */}
+
+                <div className="mt-8 mb-4 flex flex-col md:flex-row justify-between gap-4">
+
+                    {/* Search + Filter */}
+
+                    <div className="flex flex-col sm:flex-row gap-4">
 
                         <input
                             type="text"
                             placeholder="🔍 Search assets..."
                             value={searchKeyword}
-                            onChange={(e) => setSearchKeyword(e.target.value)}
-                            className="w-80 px-4 py-2 border rounded-lg"
+                            onChange={(e) =>
+                                setSearchKeyword(e.target.value)
+                            }
+                            className="w-full sm:w-80 px-4 py-2 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
+
 
                         <select
                             value={selectedType}
-                            onChange={(e) => setSelectedType(e.target.value)}
-                            className="border rounded-lg px-4 py-2"
+                            onChange={(e) =>
+                                setSelectedType(e.target.value)
+                            }
+                            className="px-4 py-2 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
 
-                            <option value="ALL">All</option>
+                            <option value="ALL">
+                                All
+                            </option>
 
-                            <option value="STOCK">Stock</option>
+                            <option value="STOCK">
+                                Stock
+                            </option>
 
-                            <option value="CRYPTO">Crypto</option>
+                            <option value="CRYPTO">
+                                Crypto
+                            </option>
 
-                            <option value="GOLD">Gold</option>
+                            <option value="GOLD">
+                                Gold
+                            </option>
 
-                            <option value="MUTUAL_FUND">Mutual Fund</option>
+                            <option value="MUTUAL_FUND">
+                                Mutual Fund
+                            </option>
 
                         </select>
 
                     </div>
 
+
+                    {/* Add Asset Button */}
+
+                    <button
+                        onClick={() => setIsModalOpen(true)}
+                        className="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+                    >
+                        + Add Asset
+                    </button>
+
                 </div>
-                <AssetTable assets={assets} />
+
+
+                {/* Asset Table */}
+
+                <AssetTable
+                    assets={assets}
+                />
+
+
+                {/* Add Asset Modal */}
+
+                <AddAssetModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onAssetAdded={async () => {
+                        await fetchAssets();
+                        await fetchSummary();
+                    }}
+                />
+
             </div>
 
         </div>
