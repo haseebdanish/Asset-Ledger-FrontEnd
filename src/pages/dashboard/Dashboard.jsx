@@ -4,6 +4,7 @@ import Navbar from "../../components/Navbar";
 import SummaryCard from "../../components/SummaryCard";
 import AssetTable from "../../components/AssetTable";
 import AddAssetModal from "../../components/AddAssetModal";
+import PortfolioChart from "../../components/PortfolioChart";
 
 import assetService from "../../services/assetService";
 import authService from "../../services/authService";
@@ -18,6 +19,8 @@ function Dashboard() {
 
     const [assets, setAssets] = useState([]);
 
+    const [allocation, setAllocation] = useState([]);
+
     const [searchKeyword, setSearchKeyword] = useState("");
 
     const [selectedType, setSelectedType] = useState("ALL");
@@ -26,82 +29,174 @@ function Dashboard() {
 
     const [editingAsset, setEditingAsset] = useState(null);
 
+    const [loading, setLoading] = useState(true);
 
-    // -----------------------------
+    const [error, setError] = useState("");
+
+
+    // --------------------------------
     // Fetch Current User
-    // -----------------------------
+    // --------------------------------
 
     const fetchUser = async () => {
 
-        try {
+        const data = await authService.getCurrentUser();
 
-            const data = await authService.getCurrentUser();
-
-            setUser(data);
-
-        } catch (error) {
-
-            console.error("Failed to fetch user:", error);
-
-        }
+        setUser(data);
 
     };
 
 
-    // -----------------------------
+    // --------------------------------
     // Fetch Portfolio Summary
-    // -----------------------------
+    // --------------------------------
 
     const fetchSummary = async () => {
 
-        try {
+        const data = await assetService.getSummary();
 
-            const data = await assetService.getSummary();
-
-            setSummary(data);
-
-        } catch (error) {
-
-            console.error("Failed to fetch summary:", error);
-
-        }
+        setSummary(data);
 
     };
 
 
-    // -----------------------------
+    // --------------------------------
+    // Fetch Portfolio Allocation
+    // --------------------------------
+
+    const fetchAllocation = async () => {
+
+        const data = await assetService.getAllocation();
+
+        setAllocation(data);
+
+    };
+
+
+    // --------------------------------
     // Fetch Assets
-    // -----------------------------
+    // --------------------------------
 
     const fetchAssets = async () => {
 
+        let data;
+
+        if (searchKeyword.trim() !== "") {
+
+            data = await assetService.searchAssets(
+                searchKeyword
+            );
+
+        } else if (selectedType !== "ALL") {
+
+            data = await assetService.getAssetsByType(
+                selectedType
+            );
+
+        } else {
+
+            data = await assetService.getAssets();
+
+        }
+
+        setAssets(data);
+
+    };
+
+
+    // --------------------------------
+    // Load Dashboard
+    // --------------------------------
+
+    const loadDashboard = async () => {
+
         try {
 
-            let data;
+            setLoading(true);
+            setError("");
 
-            if (searchKeyword.trim() !== "") {
-
-                data = await assetService.searchAssets(searchKeyword);
-
-            } else if (selectedType !== "ALL") {
-
-                data = await assetService.getAssetsByType(selectedType);
-
-            } else {
-
-                data = await assetService.getAssets();
-
-            }
-
-            setAssets(data);
+            await Promise.all([
+                fetchUser(),
+                fetchSummary(),
+                fetchAllocation(),
+                fetchAssets()
+            ]);
 
         } catch (error) {
 
-            console.error("Failed to fetch assets:", error);
+            console.error(
+                "Failed to load dashboard:",
+                error
+            );
+
+            setError(
+                "Unable to load your portfolio. Please try again."
+            );
+
+        } finally {
+
+            setLoading(false);
 
         }
 
     };
+
+
+    // --------------------------------
+    // Initial Dashboard Load
+    // --------------------------------
+
+    useEffect(() => {
+
+        loadDashboard();
+
+    }, []);
+
+
+    // --------------------------------
+    // Search / Filter
+    // --------------------------------
+
+    useEffect(() => {
+
+        // Don't fetch again while the initial
+        // dashboard is loading.
+
+        if (loading) {
+            return;
+        }
+
+        const updateAssets = async () => {
+
+            try {
+
+                setError("");
+
+                await fetchAssets();
+
+            } catch (error) {
+
+                console.error(
+                    "Failed to fetch assets:",
+                    error
+                );
+
+                setError(
+                    "Unable to load your assets."
+                );
+
+            }
+
+        };
+
+        updateAssets();
+
+    }, [searchKeyword, selectedType]);
+
+
+    // --------------------------------
+    // Delete Asset
+    // --------------------------------
 
     const handleDelete = async (asset) => {
 
@@ -115,41 +210,105 @@ function Dashboard() {
 
         try {
 
+            setError("");
+
             await assetService.deleteAsset(asset.id);
 
             await fetchAssets();
             await fetchSummary();
+            await fetchAllocation();
 
         } catch (error) {
 
-            console.error("Failed to delete asset:", error);
+            console.error(
+                "Failed to delete asset:",
+                error
+            );
+
+            setError(
+                "Failed to delete asset. Please try again."
+            );
 
         }
+
     };
 
 
-    // -----------------------------
-    // Initial Dashboard Data
-    // -----------------------------
+    // --------------------------------
+    // Loading State
+    // --------------------------------
 
-    useEffect(() => {
+    if (loading) {
 
-        fetchUser();
-        fetchSummary();
+        return (
 
-    }, []);
+            <div className="min-h-screen bg-slate-100">
+
+                <Navbar />
+
+                <div className="flex items-center justify-center min-h-[80vh]">
+
+                    <div className="text-center">
+
+                        <div className="text-2xl font-semibold text-slate-700">
+                            Loading portfolio...
+                        </div>
+
+                        <p className="text-slate-500 mt-2">
+                            Please wait a moment.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        );
+
+    }
 
 
-    // -----------------------------
-    // Fetch Assets when
-    // Search / Filter changes
-    // -----------------------------
+    // --------------------------------
+    // Error State
+    // --------------------------------
 
-    useEffect(() => {
+    if (error && !summary) {
 
-        fetchAssets();
+        return (
 
-    }, [searchKeyword, selectedType]);
+            <div className="min-h-screen bg-slate-100">
+
+                <Navbar />
+
+                <div className="flex items-center justify-center min-h-[80vh] px-4">
+
+                    <div className="bg-white rounded-xl shadow p-8 text-center max-w-md">
+
+                        <h2 className="text-2xl font-bold text-slate-800">
+                            Something went wrong
+                        </h2>
+
+                        <p className="text-slate-500 mt-3">
+                            {error}
+                        </p>
+
+                        <button
+                            onClick={loadDashboard}
+                            className="mt-6 bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+                        >
+                            Try Again
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        );
+
+    }
 
 
     return (
@@ -170,6 +329,28 @@ function Dashboard() {
                 </h2>
 
 
+                {/* Error Banner */}
+
+                {error && (
+
+                    <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex justify-between items-center">
+
+                        <span>
+                            {error}
+                        </span>
+
+                        <button
+                            onClick={() => setError("")}
+                            className="font-semibold hover:text-red-900"
+                        >
+                            ✕
+                        </button>
+
+                    </div>
+
+                )}
+
+
                 {/* Summary Cards */}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -177,7 +358,7 @@ function Dashboard() {
                     <SummaryCard
                         title="Total Investment"
                         value={formatCurrency(
-                            summary?.totalInvestment
+                            summary?.totalInvestment ?? 0
                         )}
                     />
 
@@ -189,25 +370,30 @@ function Dashboard() {
                     <SummaryCard
                         title="Stocks"
                         value={formatCurrency(
-                            summary?.stockInvestment
+                            summary?.stockInvestment ?? 0
                         )}
                     />
 
                     <SummaryCard
                         title="Crypto"
                         value={formatCurrency(
-                            summary?.cryptoInvestment
+                            summary?.cryptoInvestment ?? 0
                         )}
                     />
 
                 </div>
 
 
+                {/* Portfolio Chart */}
+
+                <PortfolioChart
+                    allocation={allocation}
+                />
+
+
                 {/* Portfolio Toolbar */}
 
                 <div className="mt-8 mb-4 flex flex-col md:flex-row justify-between gap-4">
-
-                    {/* Search + Filter */}
 
                     <div className="flex flex-col sm:flex-row gap-4">
 
@@ -250,15 +436,26 @@ function Dashboard() {
                                 Mutual Fund
                             </option>
 
+                            <option value="BANK">
+                                Bank
+                            </option>
+
+                            <option value="REAL_ESTATE">
+                                Real Estate
+                            </option>
+
                         </select>
 
                     </div>
 
 
-                    {/* Add Asset Button */}
+                    {/* Add Asset */}
 
                     <button
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={() => {
+                            setEditingAsset(null);
+                            setIsModalOpen(true);
+                        }}
                         className="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
                     >
                         + Add Asset
@@ -271,22 +468,33 @@ function Dashboard() {
 
                 <AssetTable
                     assets={assets}
-                    onEdit={(asset) => setEditingAsset(asset)}
+                    onEdit={(asset) => {
+                        setEditingAsset(asset);
+                        setIsModalOpen(false);
+                    }}
                     onDelete={handleDelete}
                 />
 
 
-                {/* Add Asset Modal */}
+                {/* Add / Edit Modal */}
 
                 <AddAssetModal
-                    isOpen={isModalOpen || editingAsset !== null}
+                    isOpen={
+                        isModalOpen ||
+                        editingAsset !== null
+                    }
                     onClose={() => {
+
                         setIsModalOpen(false);
                         setEditingAsset(null);
+
                     }}
                     onAssetAdded={async () => {
+
                         await fetchAssets();
                         await fetchSummary();
+                        await fetchAllocation();
+
                     }}
                     editingAsset={editingAsset}
                 />

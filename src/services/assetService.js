@@ -118,6 +118,20 @@ const assetService = {
         return response.data;
     },
 
+    getAllocation: async () => {
+
+        const response = await api.get(
+            "/assets/allocation",
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            }
+        );
+
+        return response.data;
+    },
+
 };
 
 export default assetService;
