@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import assetService from "../services/assetService";
 
-function AddAssetModal({ isOpen, onClose, onAssetAdded }) {
+function AddAssetModal({
+    isOpen,
+    onClose,
+    onAssetAdded,
+    editingAsset
+}) {
 
     const [assetName, setAssetName] = useState("");
     const [assetType, setAssetType] = useState("STOCK");
@@ -11,9 +16,42 @@ function AddAssetModal({ isOpen, onClose, onAssetAdded }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
+
+    // --------------------------------
+    // Populate form when editing
+    // --------------------------------
+
+    useEffect(() => {
+
+        if (editingAsset) {
+
+            setAssetName(editingAsset.assetName);
+            setAssetType(editingAsset.assetType);
+            setQuantity(editingAsset.quantity);
+            setInvestedAmount(editingAsset.investedAmount);
+
+        } else {
+
+            setAssetName("");
+            setAssetType("STOCK");
+            setQuantity("");
+            setInvestedAmount("");
+
+        }
+
+        setError("");
+
+    }, [editingAsset, isOpen]);
+
+
     if (!isOpen) {
         return null;
     }
+
+
+    // --------------------------------
+    // Handle Submit
+    // --------------------------------
 
     const handleSubmit = async (e) => {
 
@@ -31,17 +69,37 @@ function AddAssetModal({ isOpen, onClose, onAssetAdded }) {
                 investedAmount: Number(investedAmount),
             };
 
-            await assetService.addAsset(assetData);
 
-            // Tell Dashboard that the asset was successfully added
-            onAssetAdded();
+            // EDIT
+            if (editingAsset) {
 
-            // Clear form
+                await assetService.updateAsset(
+                    editingAsset.id,
+                    assetData
+                );
+
+            }
+
+            // ADD
+            else {
+
+                await assetService.addAsset(assetData);
+
+            }
+
+
+            // Refresh Dashboard data
+            await onAssetAdded();
+
+
+            // Reset form
             setAssetName("");
             setAssetType("STOCK");
             setQuantity("");
             setInvestedAmount("");
 
+
+            // Close modal
             onClose();
 
         } catch (error) {
@@ -50,7 +108,7 @@ function AddAssetModal({ isOpen, onClose, onAssetAdded }) {
 
             setError(
                 error.response?.data?.message ||
-                "Failed to add asset."
+                "Failed to save asset."
             );
 
         } finally {
@@ -58,17 +116,40 @@ function AddAssetModal({ isOpen, onClose, onAssetAdded }) {
             setLoading(false);
 
         }
+
     };
+
 
     return (
 
-        <div className="fixed inset-0 bg-black/40 flex justify-center items-center px-4">
+        <div className="fixed inset-0 z-50 bg-black/40 flex justify-center items-center px-4">
 
             <div className="bg-white rounded-xl shadow-lg w-full max-w-md p-6">
 
-                <h2 className="text-2xl font-bold mb-6">
-                    Add Asset
-                </h2>
+                {/* Header */}
+
+                <div className="flex justify-between items-center mb-6">
+
+                    <h2 className="text-2xl font-bold">
+
+                        {editingAsset
+                            ? "Edit Asset"
+                            : "Add Asset"
+                        }
+
+                    </h2>
+
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        disabled={loading}
+                        className="text-slate-400 hover:text-slate-600 text-xl"
+                    >
+                        ✕
+                    </button>
+
+                </div>
+
 
                 <form
                     onSubmit={handleSubmit}
@@ -201,7 +282,7 @@ function AddAssetModal({ isOpen, onClose, onAssetAdded }) {
                             type="button"
                             onClick={onClose}
                             disabled={loading}
-                            className="px-4 py-2 border rounded-lg hover:bg-slate-50"
+                            className="px-4 py-2 border rounded-lg hover:bg-slate-50 disabled:opacity-50"
                         >
                             Cancel
                         </button>
@@ -211,7 +292,14 @@ function AddAssetModal({ isOpen, onClose, onAssetAdded }) {
                             disabled={loading}
                             className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
                         >
-                            {loading ? "Adding..." : "Add Asset"}
+
+                            {loading
+                                ? "Saving..."
+                                : editingAsset
+                                    ? "Save Changes"
+                                    : "Add Asset"
+                            }
+
                         </button>
 
                     </div>
@@ -223,6 +311,7 @@ function AddAssetModal({ isOpen, onClose, onAssetAdded }) {
         </div>
 
     );
+
 }
 
 export default AddAssetModal;

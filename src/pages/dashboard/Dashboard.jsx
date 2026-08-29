@@ -24,6 +24,8 @@ function Dashboard() {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const [editingAsset, setEditingAsset] = useState(null);
+
 
     // -----------------------------
     // Fetch Current User
@@ -245,18 +247,23 @@ function Dashboard() {
 
                 <AssetTable
                     assets={assets}
+                    onEdit={(asset) => setEditingAsset(asset)}
                 />
 
 
                 {/* Add Asset Modal */}
 
                 <AddAssetModal
-                    isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
+                    isOpen={isModalOpen || editingAsset !== null}
+                    onClose={() => {
+                        setIsModalOpen(false);
+                        setEditingAsset(null);
+                    }}
                     onAssetAdded={async () => {
                         await fetchAssets();
                         await fetchSummary();
                     }}
+                    editingAsset={editingAsset}
                 />
 
             </div>

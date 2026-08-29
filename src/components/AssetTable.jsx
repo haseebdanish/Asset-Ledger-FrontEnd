@@ -1,6 +1,6 @@
 import { formatCurrency } from "../utils/formatCurrency";
 
-function AssetTable({ assets }) {
+function AssetTable({ assets, onEdit }) {
 
     return (
 
@@ -18,50 +18,63 @@ function AssetTable({ assets }) {
 
                 <thead className="bg-slate-100">
 
-                <tr>
+                    <tr>
 
-                    <th className="text-left px-6 py-3">Asset</th>
+                        <th className="text-left px-6 py-3">Asset</th>
 
-                    <th className="text-left px-6 py-3">Type</th>
+                        <th className="text-left px-6 py-3">Type</th>
 
-                    <th className="text-left px-6 py-3">Quantity</th>
+                        <th className="text-left px-6 py-3">Quantity</th>
 
-                    <th className="text-left px-6 py-3">Investment</th>
+                        <th className="text-left px-6 py-3">Investment</th>
 
-                </tr>
+                        <th className="text-left px-6 py-3">Actions</th>
+
+                    </tr>
 
                 </thead>
 
                 <tbody>
 
-                {
-                    assets.map(asset => (
+                    {
+                        assets.map(asset => (
 
-                        <tr
-                            key={asset.id}
-                            className="border-b hover:bg-slate-50"
-                        >
+                            <tr
+                                key={asset.id}
+                                className="border-b hover:bg-slate-50"
+                            >
 
-                            <td className="px-6 py-4">
-                                {asset.assetName}
-                            </td>
+                                <td className="px-6 py-4">
+                                    {asset.assetName}
+                                </td>
 
-                            <td className="px-6 py-4">
-                                {asset.assetType}
-                            </td>
+                                <td className="px-6 py-4">
+                                    {asset.assetType}
+                                </td>
 
-                            <td className="px-6 py-4">
-                                {asset.quantity}
-                            </td>
+                                <td className="px-6 py-4">
+                                    {asset.quantity}
+                                </td>
 
-                            <td className="px-6 py-4">
-                                {formatCurrency(asset.investedAmount)}
-                            </td>
+                                <td className="px-6 py-4">
+                                    {formatCurrency(asset.investedAmount)}
+                                </td>
 
-                        </tr>
+                                <td className="px-6 py-4">
 
-                    ))
-                }
+                                    <button
+                                        onClick={() => onEdit(asset)}
+                                        className="text-blue-600 hover:text-blue-800 font-medium"
+                                    >
+                                        Edit
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+                        ))
+                    }
 
                 </tbody>
 

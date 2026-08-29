@@ -89,6 +89,21 @@ const assetService = {
         return response.data;
     },
 
+    updateAsset: async (id, assetData) => {
+
+        const response = await api.put(
+            `/assets/${id}`,
+            assetData,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            }
+        );
+
+        return response.data;
+    },
+
 };
 
 export default assetService;
