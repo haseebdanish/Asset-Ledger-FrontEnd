@@ -104,6 +104,20 @@ const assetService = {
         return response.data;
     },
 
+    deleteAsset: async (id) => {
+
+        const response = await api.delete(
+            `/assets/${id}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                },
+            }
+        );
+
+        return response.data;
+    },
+
 };
 
 export default assetService;

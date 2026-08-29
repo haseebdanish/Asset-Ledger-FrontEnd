@@ -1,6 +1,6 @@
 import { formatCurrency } from "../utils/formatCurrency";
 
-function AssetTable({ assets, onEdit }) {
+function AssetTable({ assets, onEdit, onDelete }) {
 
     return (
 
@@ -62,12 +62,23 @@ function AssetTable({ assets, onEdit }) {
 
                                 <td className="px-6 py-4">
 
-                                    <button
-                                        onClick={() => onEdit(asset)}
-                                        className="text-blue-600 hover:text-blue-800 font-medium"
-                                    >
-                                        Edit
-                                    </button>
+                                    <div className="flex gap-4">
+
+                                        <button
+                                            onClick={() => onEdit(asset)}
+                                            className="text-blue-600 hover:text-blue-800 font-medium"
+                                        >
+                                            Edit
+                                        </button>
+
+                                        <button
+                                            onClick={() => onDelete(asset)}
+                                            className="text-red-600 hover:text-red-800 font-medium"
+                                        >
+                                            Delete
+                                        </button>
+
+                                    </div>
 
                                 </td>
 

@@ -103,6 +103,30 @@ function Dashboard() {
 
     };
 
+    const handleDelete = async (asset) => {
+
+        const confirmed = window.confirm(
+            `Are you sure you want to delete ${asset.assetName}?`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+
+            await assetService.deleteAsset(asset.id);
+
+            await fetchAssets();
+            await fetchSummary();
+
+        } catch (error) {
+
+            console.error("Failed to delete asset:", error);
+
+        }
+    };
+
 
     // -----------------------------
     // Initial Dashboard Data
@@ -248,6 +272,7 @@ function Dashboard() {
                 <AssetTable
                     assets={assets}
                     onEdit={(asset) => setEditingAsset(asset)}
+                    onDelete={handleDelete}
                 />
 
 
