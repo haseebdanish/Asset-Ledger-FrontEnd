@@ -1,34 +1,38 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 
 function Navbar() {
-
     const navigate = useNavigate();
-    const { logout } = useAuth();
 
     const handleLogout = () => {
-        logout();
-        navigate("/");
+        localStorage.removeItem("token");
+        navigate("/", { replace: true });
     };
 
     return (
-        <nav className="bg-white shadow-sm border-b">
-
-            <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-
-                <h1 className="text-2xl font-bold text-blue-600">
-                    AssetLedger
-                </h1>
+        <nav className="bg-white border-b border-slate-200">
+            <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
 
                 <button
-                    onClick={handleLogout}
-                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
+                    onClick={() => navigate("/dashboard")}
+                    className="text-2xl font-bold text-blue-600"
                 >
-                    Logout
+                    AssetLedger
                 </button>
 
-            </div>
+                <div className="flex items-center gap-4">
+                    <span className="hidden sm:inline text-sm text-slate-500">
+                        Portfolio Dashboard
+                    </span>
 
+                    <button
+                        onClick={handleLogout}
+                        className="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 font-medium hover:bg-slate-50 transition"
+                    >
+                        Logout
+                    </button>
+                </div>
+
+            </div>
         </nav>
     );
 }
