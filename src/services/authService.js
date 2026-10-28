@@ -1,15 +1,21 @@
 import api from "../api/axios";
 
 const authService = {
-    login : async (credentials) => {
 
+login: async (credentials) => {
     const response = await api.post(
         "/auth/login",
-        credentials
+        credentials,
+        {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
     );
 
     return response.data;
 },
+
 
     register : async (userData) => {
 

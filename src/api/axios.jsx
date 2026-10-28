@@ -9,18 +9,28 @@ const api = axios.create({
 });
 
 // Attach the JWT to every request.
+
 api.interceptors.request.use(
     (config) => {
+        const requestUrl = config.url ?? "";
+
+        const isAuthEndpoint =
+            requestUrl.startsWith("/auth/login") ||
+            requestUrl.startsWith("/auth/register");
+
         const token = localStorage.getItem("token");
 
-        if (token) {
+        if (!isAuthEndpoint && token) {
             config.headers.Authorization = `Bearer ${token}`;
+        } else {
+            delete config.headers.Authorization;
         }
 
         return config;
     },
     (error) => Promise.reject(error)
 );
+
 
 // Handle unauthorized responses centrally.
 
