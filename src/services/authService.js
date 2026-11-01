@@ -17,11 +17,15 @@ login: async (credentials) => {
 },
 
 
-    register : async (userData) => {
-
+register: async (userData) => {
     const response = await api.post(
         "/auth/register",
-        userData
+        userData,
+        {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
     );
 
     return response.data;
