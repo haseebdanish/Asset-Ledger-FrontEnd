@@ -1,8 +1,8 @@
-
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import authService from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
+import { useLocation } from "react-router-dom";
 
 function Login() {
     const [email, setEmail] = useState("");
@@ -12,6 +12,9 @@ function Login() {
 
     const { login } = useAuth();
     const navigate = useNavigate();
+
+    const location = useLocation();
+    const registered = location.state?.registered;
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -65,6 +68,15 @@ function Login() {
                         <p className="mt-1 text-sm text-[#78817c]">
                             Sign in to access your portfolio.
                         </p>
+
+                        {registered && (
+                            <div
+                                role="status"
+                                className="mt-4 rounded-xl border border-[#cfe3d5] bg-[#f0f8f2] px-4 py-3 text-sm text-[#326345]"
+                            >
+                                Account created successfully! You can now sign in.
+                            </div>
+                        )}
                     </div>
 
                     <form onSubmit={handleLogin} className="space-y-5">
