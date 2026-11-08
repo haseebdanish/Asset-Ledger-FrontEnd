@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
@@ -8,17 +9,20 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
-    <Routes>
+    <>
+      <Routes>
 
-      <Route path="/" element={<Login />} />
+        <Route path="/" element={<Login />} />
 
-      <Route path="/register" element={<Register />} />
+        <Route path="/register" element={<Register />} />
 
-      <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute> }/>
+        <Route path="/dashboard" element={<ProtectedRoute> <Dashboard /> </ProtectedRoute> }/>
 
-      <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<NotFound />} />
 
-    </Routes>
+      </Routes>
+      <Analytics />
+    </>
   );
 }
 
