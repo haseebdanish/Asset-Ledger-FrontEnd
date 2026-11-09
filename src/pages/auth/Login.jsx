@@ -34,10 +34,28 @@ function Login() {
         } catch (err) {
             console.error("Login failed:", err);
 
-            setError(
-                err.response?.data?.message ||
-                "Invalid email or password. Please try again."
-            );
+            const status = err.response?.status;
+
+            if (status === 401) {
+                setError("Invalid email or password. Please try again.");
+            } else if (err.code === "ECONNABORTED" || err.code === "ETIMEDOUT") {
+                setError(
+                    "The server took too long to respond. Please try signing in again."
+                );
+            } else if (!err.response) {
+                setError(
+                    "Unable to connect to the server. Please check your internet connection or try again shortly."
+                );
+            } else if (status >= 500) {
+                setError(
+                    "Something went wrong on our server. Please try again in a moment."
+                );
+            } else {
+                setError(
+                    err.response?.data?.message ||
+                    "Unable to sign in. Please try again."
+                );
+            }
         } finally {
             setLoading(false);
         }
