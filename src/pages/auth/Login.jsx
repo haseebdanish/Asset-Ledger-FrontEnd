@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import authService from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
 import { useLocation } from "react-router-dom";
@@ -9,6 +9,7 @@ function Login() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState("");
 
     const { login } = useAuth();
     const navigate = useNavigate();
@@ -41,6 +42,30 @@ function Login() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (!loading) {
+            setLoadingMessage("");
+            return;
+        }
+
+        const wakeUpTimer = setTimeout(() => {
+            setLoadingMessage(
+                "The server is taking a little longer to respond. Please wait..."
+            );
+        }, 8000);
+
+        const longWaitTimer = setTimeout(() => {
+            setLoadingMessage(
+                "The server may be starting after inactivity. This can take up to a couple of minutes. Please keep this page open."
+            );
+        }, 20000);
+
+        return () => {
+            clearTimeout(wakeUpTimer);
+            clearTimeout(longWaitTimer);
+        };
+    }, [loading]);
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-[#f6f5f0] px-4 py-8">
@@ -139,6 +164,15 @@ function Login() {
                         >
                             {loading ? "Signing in..." : "Sign in"}
                         </button>
+                        {loadingMessage && (
+                            <p
+                                role="status"
+                                aria-live="polite"
+                                className="mt-3 text-center text-sm text-[#78817c]"
+                            >
+                                {loadingMessage}
+                            </p>
+                        )}
                     </form>
 
                     <p className="mt-7 text-center text-sm text-[#78817c]">
