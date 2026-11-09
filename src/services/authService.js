@@ -10,6 +10,7 @@ login: async (credentials) => {
             headers: {
                 "Content-Type": "application/json",
             },
+            timeout: 180000,
         }
     );
 
