@@ -1,13 +1,12 @@
-
 import { formatCurrency } from "../utils/formatCurrency";
 
 const assetTypeStyles = {
-    STOCK: "bg-[#e8efe9] text-[#365c4e]",
-    CRYPTO: "bg-[#f5eddf] text-[#8a6831]",
-    GOLD: "bg-[#f6efd9] text-[#896d24]",
-    MUTUAL_FUND: "bg-[#e9eaf7] text-[#535b94]",
-    BANK: "bg-[#e5eff6] text-[#376781]",
-    REAL_ESTATE: "bg-[#f2e7e1] text-[#8a5844]",
+    STOCK: "bg-[#7194F5]/15 text-[#91ACFA]",
+    CRYPTO: "bg-[#B18AE8]/15 text-[#C6A8F0]",
+    GOLD: "bg-[#D6B66D]/15 text-[#E5CB8F]",
+    MUTUAL_FUND: "bg-[#6FB9AA]/15 text-[#8BCDBF]",
+    BANK: "bg-[#78A9C9]/15 text-[#9BC3DC]",
+    REAL_ESTATE: "bg-[#D58E79]/15 text-[#E5A895]",
 };
 
 const assetTypeLabels = {
@@ -21,9 +20,10 @@ const assetTypeLabels = {
 
 function AssetTypeBadge({ type }) {
     const styles =
-        assetTypeStyles[type] ?? "bg-[#f0f1ed] text-[#5d665f]";
+        assetTypeStyles[type] ?? "bg-[#414751] text-[#A7ABB4]";
 
-    const label = assetTypeLabels[type] ?? type?.replaceAll("_", " ");
+    const label =
+        assetTypeLabels[type] ?? type?.replaceAll("_", " ");
 
     return (
         <span
@@ -36,21 +36,22 @@ function AssetTypeBadge({ type }) {
 
 function AssetTable({ assets, onEdit, onDelete }) {
     return (
-        <div className="overflow-hidden rounded-2xl border border-[#e6e8e2] bg-white">
+        <div className="overflow-hidden border border-[#414751] bg-[#2B3038]">
+
             {/* Table heading */}
-            <div className="flex flex-col gap-1 border-b border-[#e9ebe6] px-5 py-5 sm:px-6">
-                <h3 className="text-base font-semibold tracking-tight text-[#172b27]">
-                    Portfolio holdings
+            <div className="border-b border-[#414751] px-5 py-5 sm:px-6">
+                <h3 className="text-base font-semibold tracking-tight text-[#F1EFE8]">
+                    Your holdings
                 </h3>
 
-                <p className="text-sm text-[#78817c]">
-                    A breakdown of your tracked assets and investments.
+                <p className="mt-1 text-sm text-[#A7ABB4]">
+                    A detailed view of your tracked assets and investments.
                 </p>
             </div>
 
             {assets.length === 0 ? (
                 <div className="px-5 py-16 text-center sm:px-6">
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#edf2ed] text-[#52796f]">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl border border-[#414751] bg-[#343A44] text-[#8199E8]">
                         <svg
                             viewBox="0 0 24 24"
                             fill="none"
@@ -73,73 +74,73 @@ function AssetTable({ assets, onEdit, onDelete }) {
                         </svg>
                     </div>
 
-                    <h4 className="mt-4 text-sm font-semibold text-[#34433d]">
+                    <h4 className="mt-4 text-sm font-semibold text-[#F1EFE8]">
                         No assets found
                     </h4>
 
-                    <p className="mx-auto mt-1 max-w-sm text-sm leading-6 text-[#78817c]">
+                    <p className="mx-auto mt-1 max-w-sm text-sm leading-6 text-[#A7ABB4]">
                         Your holdings will appear here when you add an asset
                         or adjust your search and filters.
                     </p>
                 </div>
             ) : (
                 <div className="overflow-x-auto">
-                    <table className="w-full min-w-[720px] border-collapse text-left">
+                    <table className="w-full min-w-[760px] border-collapse text-left">
                         <thead>
-                            <tr className="border-b border-[#e9ebe6] bg-[#fafaf7]">
+                            <tr className="border-b border-[#414751] bg-[#252A31]">
                                 <th
                                     scope="col"
-                                    className="px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#78817c]"
+                                    className="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-[#A7ABB4]"
                                 >
                                     Asset
                                 </th>
 
                                 <th
                                     scope="col"
-                                    className="px-5 py-3.5 text-xs font-semibold uppercase tracking-wider text-[#78817c]"
+                                    className="px-5 py-4 text-xs font-semibold uppercase tracking-wider text-[#A7ABB4]"
                                 >
                                     Type
                                 </th>
 
                                 <th
                                     scope="col"
-                                    className="px-5 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-[#78817c]"
+                                    className="px-5 py-4 text-right text-xs font-semibold uppercase tracking-wider text-[#A7ABB4]"
                                 >
                                     Quantity
                                 </th>
 
                                 <th
                                     scope="col"
-                                    className="px-6 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-[#78817c]"
+                                    className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-[#A7ABB4]"
                                 >
                                     Investment
                                 </th>
 
                                 <th
                                     scope="col"
-                                    className="px-6 py-3.5 text-right text-xs font-semibold uppercase tracking-wider text-[#78817c]"
+                                    className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-[#A7ABB4]"
                                 >
                                     Actions
                                 </th>
                             </tr>
                         </thead>
 
-                        <tbody className="divide-y divide-[#eef0eb]">
+                        <tbody className="divide-y divide-[#414751]">
                             {assets.map((asset) => (
                                 <tr
                                     key={asset.id}
-                                    className="transition-colors duration-150 hover:bg-[#fafbf8]"
+                                    className="transition-colors duration-150 hover:bg-[#343A44]"
                                 >
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#edf2ed] text-sm font-semibold text-[#365c4e]">
+                                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-[#52617f] bg-[#343A44] text-sm font-semibold text-[#8199E8]">
                                                 {asset.assetName
                                                     ?.trim()
                                                     ?.charAt(0)
                                                     ?.toUpperCase() ?? "A"}
                                             </div>
 
-                                            <span className="max-w-[220px] truncate text-sm font-semibold text-[#27352f]">
+                                            <span className="max-w-[220px] truncate text-sm font-semibold text-[#F1EFE8]">
                                                 {asset.assetName}
                                             </span>
                                         </div>
@@ -151,11 +152,11 @@ function AssetTable({ assets, onEdit, onDelete }) {
                                         />
                                     </td>
 
-                                    <td className="px-5 py-4 text-right text-sm tabular-nums text-[#56615a]">
+                                    <td className="px-5 py-4 text-right text-sm tabular-nums text-[#A7ABB4]">
                                         {asset.quantity}
                                     </td>
 
-                                    <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-semibold tabular-nums text-[#27352f]">
+                                    <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-semibold tabular-nums text-[#F1EFE8]">
                                         {formatCurrency(asset.investedAmount)}
                                     </td>
 
@@ -164,7 +165,7 @@ function AssetTable({ assets, onEdit, onDelete }) {
                                             <button
                                                 onClick={() => onEdit(asset)}
                                                 aria-label={`Edit ${asset.assetName}`}
-                                                className="rounded-lg px-3 py-2 text-xs font-semibold text-[#52796f] transition hover:bg-[#edf2ed] hover:text-[#172b27] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#52796f]"
+                                                className="px-3 py-2 text-xs font-semibold text-[#91ACFA] transition hover:bg-[#315BDB]/15 hover:text-[#B5C7FF] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#315BDB]"
                                             >
                                                 Edit
                                             </button>
@@ -172,7 +173,7 @@ function AssetTable({ assets, onEdit, onDelete }) {
                                             <button
                                                 onClick={() => onDelete(asset)}
                                                 aria-label={`Delete ${asset.assetName}`}
-                                                className="rounded-lg px-3 py-2 text-xs font-semibold text-[#a45d4d] transition hover:bg-[#fff0eb] hover:text-[#813d30] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c47b69]"
+                                                className="px-3 py-2 text-xs font-semibold text-[#E47D7D] transition hover:bg-[#E47D7D]/10 hover:text-[#F2A1A1] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E47D7D]"
                                             >
                                                 Delete
                                             </button>
@@ -187,10 +188,10 @@ function AssetTable({ assets, onEdit, onDelete }) {
 
             {/* Table footer */}
             {assets.length > 0 && (
-                <div className="border-t border-[#e9ebe6] bg-[#fdfdfb] px-5 py-3.5 sm:px-6">
-                    <p className="text-xs text-[#78817c]">
+                <div className="border-t border-[#414751] px-5 py-3.5 sm:px-6">
+                    <p className="text-xs text-[#A7ABB4]">
                         Showing{" "}
-                        <span className="font-semibold text-[#34433d]">
+                        <span className="font-semibold text-[#F1EFE8]">
                             {assets.length}
                         </span>{" "}
                         {assets.length === 1 ? "holding" : "holdings"}

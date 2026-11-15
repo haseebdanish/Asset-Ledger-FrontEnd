@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import assetService from "../services/assetService";
 
@@ -12,10 +11,10 @@ const assetTypes = [
 ];
 
 const inputClass =
-    "w-full rounded-xl border border-[#e2e5df] bg-[#fbfbf9] px-4 py-3 text-sm text-[#27352f] outline-none transition placeholder:text-[#a0a7a1] focus:border-[#52796f] focus:bg-white focus:ring-2 focus:ring-[#52796f]/15 disabled:cursor-not-allowed disabled:opacity-60";
+    "w-full border border-[#414751] bg-[#252A31] px-4 py-3 text-sm text-[#F1EFE8] outline-none transition placeholder:text-[#777F8B] focus:border-[#315BDB] focus:ring-2 focus:ring-[#315BDB]/20 disabled:cursor-not-allowed disabled:opacity-60";
 
 const labelClass =
-    "mb-2 block text-sm font-medium text-[#34433d]";
+    "mb-2 block text-sm font-medium text-[#D9D9D3]";
 
 function AddAssetModal({
     isOpen,
@@ -36,9 +35,7 @@ function AddAssetModal({
             setAssetName(editingAsset.assetName ?? "");
             setAssetType(editingAsset.assetType ?? "STOCK");
             setQuantity(String(editingAsset.quantity ?? ""));
-            setInvestedAmount(
-                String(editingAsset.investedAmount ?? "")
-            );
+            setInvestedAmount(String(editingAsset.investedAmount ?? ""));
         } else {
             setAssetName("");
             setAssetType("STOCK");
@@ -86,10 +83,7 @@ function AddAssetModal({
             return;
         }
 
-        if (
-            !Number.isFinite(parsedInvestment) ||
-            parsedInvestment <= 0
-        ) {
+        if (!Number.isFinite(parsedInvestment) || parsedInvestment <= 0) {
             setError("Investment amount must be greater than zero.");
             return;
         }
@@ -106,10 +100,7 @@ function AddAssetModal({
             };
 
             if (editingAsset) {
-                await assetService.updateAsset(
-                    editingAsset.id,
-                    assetData
-                );
+                await assetService.updateAsset(editingAsset.id, assetData);
             } else {
                 await assetService.addAsset(assetData);
             }
@@ -130,7 +121,7 @@ function AddAssetModal({
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#14221e]/50 px-4 py-6 backdrop-blur-[3px]"
+            className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/65 px-4 py-6 backdrop-blur-sm"
             onMouseDown={(event) => {
                 if (event.target === event.currentTarget && !loading) {
                     onClose();
@@ -141,13 +132,13 @@ function AddAssetModal({
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="asset-modal-title"
-                className="my-auto w-full max-w-lg overflow-hidden rounded-2xl border border-white/60 bg-white shadow-2xl shadow-[#172b27]/15"
+                className="my-auto w-full max-w-lg overflow-hidden border border-[#526071] bg-[#2B3038] shadow-2xl shadow-black/30"
             >
                 {/* Modal header */}
-                <div className="border-b border-[#e9ebe6] px-5 py-5 sm:px-7 sm:py-6">
+                <div className="border-b border-[#414751] px-5 py-5 sm:px-7 sm:py-6">
                     <div className="flex items-start justify-between gap-4">
                         <div className="flex items-start gap-3.5">
-                            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#eaf0eb] text-[#365c4e]">
+                            <div className="flex h-11 w-11 shrink-0 items-center justify-center border border-[#52617f] bg-[#343A44] text-[#91ACFA]">
                                 <svg
                                     viewBox="0 0 24 24"
                                     fill="none"
@@ -166,14 +157,12 @@ function AddAssetModal({
                             <div>
                                 <h2
                                     id="asset-modal-title"
-                                    className="text-lg font-semibold tracking-tight text-[#172b27] sm:text-xl"
+                                    className="text-lg font-semibold tracking-tight text-[#F1EFE8] sm:text-xl"
                                 >
-                                    {editingAsset
-                                        ? "Edit asset"
-                                        : "Add a new asset"}
+                                    {editingAsset ? "Edit asset" : "Add a new asset"}
                                 </h2>
 
-                                <p className="mt-1 text-sm leading-5 text-[#78817c]">
+                                <p className="mt-1 text-sm leading-5 text-[#A7ABB4]">
                                     {editingAsset
                                         ? "Update the details of your holding."
                                         : "Record an investment in your portfolio."}
@@ -186,7 +175,7 @@ function AddAssetModal({
                             onClick={onClose}
                             disabled={loading}
                             aria-label="Close modal"
-                            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[#78817c] transition hover:bg-[#f2f3ef] hover:text-[#172b27] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#52796f] disabled:opacity-50"
+                            className="flex h-9 w-9 shrink-0 items-center justify-center text-[#A7ABB4] transition hover:bg-[#343A44] hover:text-[#F1EFE8] disabled:opacity-50"
                         >
                             <svg
                                 viewBox="0 0 24 24"
@@ -209,10 +198,7 @@ function AddAssetModal({
                     <div className="space-y-5 px-5 py-6 sm:px-7">
                         {/* Asset name */}
                         <div>
-                            <label
-                                htmlFor="asset-name"
-                                className={labelClass}
-                            >
+                            <label htmlFor="asset-name" className={labelClass}>
                                 Asset name
                             </label>
 
@@ -220,9 +206,7 @@ function AddAssetModal({
                                 id="asset-name"
                                 type="text"
                                 value={assetName}
-                                onChange={(event) =>
-                                    setAssetName(event.target.value)
-                                }
+                                onChange={(event) => setAssetName(event.target.value)}
                                 placeholder="e.g. Apple, Bitcoin, HDFC Bank"
                                 autoComplete="off"
                                 maxLength={100}
@@ -231,17 +215,14 @@ function AddAssetModal({
                                 className={inputClass}
                             />
 
-                            <p className="mt-1.5 text-xs text-[#89918c]">
+                            <p className="mt-1.5 text-xs text-[#89919C]">
                                 Enter the name you use to identify this investment.
                             </p>
                         </div>
 
                         {/* Asset type */}
                         <div>
-                            <label
-                                htmlFor="asset-type"
-                                className={labelClass}
-                            >
+                            <label htmlFor="asset-type" className={labelClass}>
                                 Asset class
                             </label>
 
@@ -249,17 +230,12 @@ function AddAssetModal({
                                 <select
                                     id="asset-type"
                                     value={assetType}
-                                    onChange={(event) =>
-                                        setAssetType(event.target.value)
-                                    }
+                                    onChange={(event) => setAssetType(event.target.value)}
                                     disabled={loading}
                                     className={`${inputClass} appearance-none pr-10`}
                                 >
                                     {assetTypes.map((type) => (
-                                        <option
-                                            key={type.value}
-                                            value={type.value}
-                                        >
+                                        <option key={type.value} value={type.value}>
                                             {type.label}
                                         </option>
                                     ))}
@@ -270,7 +246,7 @@ function AddAssetModal({
                                     fill="none"
                                     stroke="currentColor"
                                     strokeWidth="1.8"
-                                    className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#78817c]"
+                                    className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A7ABB4]"
                                     aria-hidden="true"
                                 >
                                     <path
@@ -285,10 +261,7 @@ function AddAssetModal({
                         {/* Quantity and investment */}
                         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                             <div>
-                                <label
-                                    htmlFor="asset-quantity"
-                                    className={labelClass}
-                                >
+                                <label htmlFor="asset-quantity" className={labelClass}>
                                     Quantity
                                 </label>
 
@@ -298,30 +271,25 @@ function AddAssetModal({
                                     step="any"
                                     min="0"
                                     value={quantity}
-                                    onChange={(event) =>
-                                        setQuantity(event.target.value)
-                                    }
+                                    onChange={(event) => setQuantity(event.target.value)}
                                     placeholder="e.g. 10"
                                     required
                                     disabled={loading}
                                     className={inputClass}
                                 />
 
-                                <p className="mt-1.5 text-xs text-[#89918c]">
+                                <p className="mt-1.5 text-xs text-[#89919C]">
                                     Units owned
                                 </p>
                             </div>
 
                             <div>
-                                <label
-                                    htmlFor="asset-investment"
-                                    className={labelClass}
-                                >
+                                <label htmlFor="asset-investment" className={labelClass}>
                                     Invested amount
                                 </label>
 
                                 <div className="relative">
-                                    <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-[#78817c]">
+                                    <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-[#A7ABB4]">
                                         ₹
                                     </span>
 
@@ -331,11 +299,7 @@ function AddAssetModal({
                                         step="0.01"
                                         min="0"
                                         value={investedAmount}
-                                        onChange={(event) =>
-                                            setInvestedAmount(
-                                                event.target.value
-                                            )
-                                        }
+                                        onChange={(event) => setInvestedAmount(event.target.value)}
                                         placeholder="50,000"
                                         required
                                         disabled={loading}
@@ -343,7 +307,7 @@ function AddAssetModal({
                                     />
                                 </div>
 
-                                <p className="mt-1.5 text-xs text-[#89918c]">
+                                <p className="mt-1.5 text-xs text-[#89919C]">
                                     Total amount invested
                                 </p>
                             </div>
@@ -353,24 +317,9 @@ function AddAssetModal({
                         {error && (
                             <div
                                 role="alert"
-                                className="flex items-start gap-3 rounded-xl border border-[#efd2ca] bg-[#fff6f2] px-4 py-3"
+                                className="border border-[#70464A] bg-[#392B30] px-4 py-3"
                             >
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="1.8"
-                                    className="mt-0.5 h-4 w-4 shrink-0 text-[#a45d4d]"
-                                    aria-hidden="true"
-                                >
-                                    <circle cx="12" cy="12" r="9" />
-                                    <path
-                                        d="M12 8v4m0 4h.01"
-                                        strokeLinecap="round"
-                                    />
-                                </svg>
-
-                                <p className="text-sm leading-5 text-[#914b3b]">
+                                <p className="text-sm leading-5 text-[#E9A0A0]">
                                     {error}
                                 </p>
                             </div>
@@ -378,12 +327,12 @@ function AddAssetModal({
                     </div>
 
                     {/* Footer actions */}
-                    <div className="flex flex-col-reverse gap-3 border-t border-[#e9ebe6] bg-[#fdfdfb] px-5 py-4 sm:flex-row sm:justify-end sm:px-7">
+                    <div className="flex flex-col-reverse gap-3 border-t border-[#414751] bg-[#252A31] px-5 py-4 sm:flex-row sm:justify-end sm:px-7">
                         <button
                             type="button"
                             onClick={onClose}
                             disabled={loading}
-                            className="min-h-11 rounded-xl border border-[#dfe3dc] px-5 py-2.5 text-sm font-medium text-[#34433d] transition hover:bg-[#f2f3ef] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#52796f] disabled:opacity-50"
+                            className="min-h-11 border border-[#414751] px-5 py-2.5 text-sm font-medium text-[#A7ABB4] transition hover:bg-[#343A44] hover:text-[#F1EFE8] disabled:opacity-50"
                         >
                             Cancel
                         </button>
@@ -391,7 +340,7 @@ function AddAssetModal({
                         <button
                             type="submit"
                             disabled={loading}
-                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#172b27] px-5 py-2.5 text-sm font-medium text-white transition hover:bg-[#29463d] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#52796f] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="inline-flex min-h-11 items-center justify-center gap-2 bg-[#315BDB] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#274BC0] focus-visible:ring-2 focus-visible:ring-[#8199E8] disabled:cursor-not-allowed disabled:opacity-60"
                         >
                             {loading && (
                                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
