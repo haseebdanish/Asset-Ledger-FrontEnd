@@ -6,6 +6,8 @@ import AddAssetModal from "../../components/AddAssetModal";
 
 import assetService from "../../services/assetService";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { useCallback } from "react";
+import Toast from "../../components/Toast";
 
 const assetTypes = [
     { value: "ALL", label: "All categories" },
@@ -29,6 +31,12 @@ function MyAssets() {
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+
+    const [toast, setToast] = useState(null);
+
+    const closeToast = useCallback(() => {
+        setToast(null);
+    }, []);
 
     const fetchAssets = async () => {
         const data = await assetService.getAssets();
@@ -88,6 +96,17 @@ function MyAssets() {
         setEditingAsset(null);
     };
 
+    const handleAssetSaved = async () => {
+        await loadAssetsPage();
+
+        setToast({
+            message: editingAsset
+                ? "Asset updated successfully."
+                : "Asset added successfully.",
+            type: "success",
+        });
+    };
+
     const handleDelete = async (asset) => {
         const confirmed = window.confirm(
             `Are you sure you want to delete "${asset.assetName}"? This action cannot be undone.`
@@ -98,6 +117,11 @@ function MyAssets() {
         try {
             await assetService.deleteAsset(asset.id);
             await loadAssetsPage();
+
+            setToast({
+                message: "Asset deleted successfully.",
+                type: "success",
+            });
         } catch (err) {
             console.error("Failed to delete asset:", err);
             console.error("Delete response:", err.response?.data);
@@ -106,6 +130,10 @@ function MyAssets() {
                 err.response?.data?.message ||
                 "Unable to delete this asset. Please try again."
             );
+            setToast({
+                message: "Unable to delete this asset.",
+                type: "error",
+            });
         }
     };
 
@@ -125,6 +153,12 @@ function MyAssets() {
     return (
         <div className="min-h-screen bg-[#202329] text-[#F1EFE8]">
             <Navbar />
+
+            <Toast
+                message={toast?.message}
+                type={toast?.type}
+                onClose={closeToast}
+            />
 
             <main className="mx-auto max-w-[1440px] px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
 
@@ -250,7 +284,7 @@ function MyAssets() {
             <AddAssetModal
                 isOpen={isModalOpen}
                 onClose={closeModal}
-                onAssetAdded={loadAssetsPage}
+                onAssetAdded={handleAssetSaved}
                 editingAsset={editingAsset}
             />
         </div>
